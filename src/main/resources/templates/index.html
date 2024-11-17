@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Создать документ</title>
+</head>
+<body>
+<div id="app">
+    <main>
+        <h2>Создать новый документ</h2>
+        <form @submit.prevent="createDocument">
+            <label for="title">Название документа:</label>
+            <input type="text" id="title" ref="titleInput" placeholder="Введите название">
+            <br><br>
+
+            <label for="content">Содержимое документа:</label>
+            <textarea id="content" ref="contentInput" placeholder="Введите содержимое"></textarea>
+            <br><br>
+
+            <button type="submit">Создать документ</button>
+        </form>
+    </main>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/vue@3/dist/vue.global.js"></script>
+<script>
+    const app = Vue.createApp({
+        data() {
+            return {
+                authorId: 6 // ID текущего автора
+            };
+        },
+        methods: {
+            async createDocument() {
+                // Получаем данные из полей ввода
+                const title = this.$refs.titleInput.value.trim();
+                const content = this.$refs.contentInput.value.trim();
+
+                // Проверяем, что оба поля заполнены
+                if (!title || !content) {
+                    alert('Пожалуйста, заполните все поля!');
+                    return;
+                }
+
+                try {
+                    // Формируем данные для отправки
+                    const requestData = {
+                        authorId: this.authorId,
+                        title: title,
+                        content: content
+                    };
+
+                    // Отправляем POST-запрос на сервер
+                    const response = await fetch('/api/v1/document', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(requestData)
+                    });
+
+                    // Обрабатываем ответ сервера
+                    if (response.ok) {
+                        const result = await response.json();
+                        alert(`Документ успешно создан! ID: ${result.documentId}`);
+                        // Очистка полей после успешного создания
+                        this.$refs.titleInput.value = '';
+                        this.$refs.contentInput.value = '';
+                    } else {
+                        alert('Ошибка при создании документа');
+                    }
+                } catch (error) {
+                    console.error('Ошибка:', error);
+                    alert('Произошла ошибка при создании документа');
+                }
+            }
+        }
+    });
+
+    app.mount('#app');
+</script>
+</body>
+</html>
