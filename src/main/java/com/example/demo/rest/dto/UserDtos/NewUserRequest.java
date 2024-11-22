@@ -1,5 +1,8 @@
 package com.example.demo.rest.dto.UserDtos;
 
+import lombok.Data;
+import lombok.Getter;
+
 import java.util.Objects;
 
 public class NewUserRequest {

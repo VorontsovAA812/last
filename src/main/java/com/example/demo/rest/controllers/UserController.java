@@ -7,6 +7,7 @@ import com.example.demo.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,8 +28,11 @@ public class UserController {
     }
     @ResponseBody
     @PostMapping
-    public ResponseEntity<Long> add(@RequestBody NewUserRequest request) // Long - возвращаем индекс добавленного пользователя
+    public ResponseEntity<Long> add(@RequestBody NewUserRequest request) //
+    // Long - возвращаем индекс добавленного пользователя
     {
+        System.out.println("Получен запрос на создание пользователя: " + request);
+
         return ResponseEntity.status(HttpStatus.CREATED).body(userService.addNewUser(request));
     }
 
@@ -38,5 +42,14 @@ public class UserController {
         userService.deleteById(id);
         return ResponseEntity.ok().build();
     }
+    @GetMapping("/current")
+    public ResponseEntity<UserDto> getCurrentUser(Authentication authentication) {
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
 
+        User user = (User) authentication.getPrincipal();
+        UserDto userDto = new UserDto(user.getId(), user.getUsername());
+        return ResponseEntity.ok(userDto);
+    }
 }
