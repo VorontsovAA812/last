@@ -45,9 +45,9 @@ public class DocumentServiceImpl implements DocumentService {
     }
 
     @Override
-    public Long addNewDocument(NewDocumentRequest request) {
+    public Long addNewDocument(NewDocumentRequest request,Long userId) {
 
-        User author = userService.findById(request.getAuthorId());
+        User author = userService.findById(userId);
 
         Document document = new Document();
         document.setTitle(request.getTitle());

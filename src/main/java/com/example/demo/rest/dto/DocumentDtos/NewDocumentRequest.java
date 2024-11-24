@@ -7,16 +7,9 @@ import java.util.Objects;
 public class NewDocumentRequest {
     private String title;
     private String content;
-    private Long authorId;
 
 
-    public Long getAuthorId() {
-        return authorId;
-    }
 
-    public void setAuthorId(Long authorId) {
-        this.authorId = authorId;
-    }
 
 
 

@@ -26,29 +26,24 @@
 <script>
     const app = Vue.createApp({
         data() {
-            return {
-                authorId: null // ID текущего автора
-            };
+            return {}; // Убираем ненужное поле authorId
         },
         methods: {
-            async fetchCurrentUser() {
-                try {
-                    const response = await fetch('/api/v1/usr/current');
-                    if (response.ok) {
-                        const user = await response.json();
-                        this.authorId = user.id; // Устанавливаем ID текущего пользователя
-                        console.log('Текущий пользователь:', user);
-                    } else {
-                        console.error('Не удалось загрузить текущего пользователя');
-                        window.location.href = '/login'; // Перенаправляем на логин
-                    }
-                } catch (error) {
-                    console.error('Ошибка при загрузке текущего пользователя:', error);
-                    window.location.href = '/login'; // Перенаправляем на логин
-                }
-            },
-
-
+            // async fetchCurrentUser() {
+            //     try {
+            //         const response = await fetch('/api/v1/usr/current');
+            //         if (response.ok) {
+            //             const user = await response.json();
+            //             console.log('Текущий пользователь:', user);
+            //         } else {
+            //             console.error('Не удалось загрузить текущего пользователя');
+            //             window.location.href = '/login'; // Перенаправляем на логин
+            //         }
+            //     } catch (error) {
+            //         console.error('Ошибка при загрузке текущего пользователя:', error);
+            //         window.location.href = '/login'; // Перенаправляем на логин
+            //     }
+            // },
             async createDocument() {
                 const title = this.$refs.titleInput.value.trim();
                 const content = this.$refs.contentInput.value.trim();
@@ -60,12 +55,11 @@
 
                 try {
                     const requestData = {
-                        authorId: this.authorId,
                         title: title,
                         content: content
                     };
 
-                    const response = await fetch('/api/v1/document', {
+                    const response = await fetch('/api/v1/document/create', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
@@ -106,8 +100,8 @@
             }
         },
         mounted() {
-            // Вызов метода fetchCurrentUser при загрузке приложения
-            this.fetchCurrentUser();
+            // Проверка текущего пользователя при загрузке страницы
+            // this.fetchCurrentUser();
         }
     });
 

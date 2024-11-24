@@ -3,6 +3,7 @@ package com.example.demo.rest.controllers;
 import com.example.demo.domain.User;
 import com.example.demo.rest.dto.UserDtos.NewUserRequest;
 import com.example.demo.rest.dto.UserDtos.UserDto;
+import com.example.demo.security.CustomUserDetails;
 import com.example.demo.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -43,14 +44,13 @@ public class UserController {
         return ResponseEntity.ok().build();
     }
     @GetMapping("/current")
-    public ResponseEntity<UserDto> getCurrentUser(Authentication authentication) {
+    public ResponseEntity<Long> getCurrentUser(Authentication authentication) {
         if (authentication == null || !authentication.isAuthenticated()) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
 
-        User user = (User) authentication.getPrincipal();
-        System.out.println(user);
-        UserDto userDto = new UserDto(user.getId(), user.getUsername());
-        return ResponseEntity.ok(userDto);
-    }
-}
+        CustomUserDetails user = (CustomUserDetails) authentication.getPrincipal();
+
+
+        return ResponseEntity.ok(user.getId());
+}}
