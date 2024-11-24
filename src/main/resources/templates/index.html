@@ -27,10 +27,27 @@
     const app = Vue.createApp({
         data() {
             return {
-                authorId: 7 // ID текущего автора
+                authorId: null // ID текущего автора
             };
         },
         methods: {
+            async fetchCurrentUser() {
+                try {
+                    const response = await fetch('/api/v1/usr/current');
+                    if (response.ok) {
+                        const user = await response.json();
+                        this.authorId = user.id; // Устанавливаем ID текущего пользователя
+                        console.log('Текущий пользователь:', user);
+                    } else {
+                        console.error('Не удалось загрузить текущего пользователя');
+                        window.location.href = '/login'; // Перенаправляем на логин
+                    }
+                } catch (error) {
+                    console.error('Ошибка при загрузке текущего пользователя:', error);
+                    window.location.href = '/login'; // Перенаправляем на логин
+                }
+            },
+
 
             async createDocument() {
                 const title = this.$refs.titleInput.value.trim();
@@ -87,6 +104,10 @@
                     alert('Произошла ошибка при выходе');
                 }
             }
+        },
+        mounted() {
+            // Вызов метода fetchCurrentUser при загрузке приложения
+            this.fetchCurrentUser();
         }
     });
 

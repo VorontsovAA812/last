@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 @Controller
 @RequestMapping("/api/v1/usr")
 public class UserController {
-    private UserService userService;
+    private final UserService userService;
 
     @Autowired
     public UserController(UserService userService) {
@@ -49,6 +49,7 @@ public class UserController {
         }
 
         User user = (User) authentication.getPrincipal();
+        System.out.println(user);
         UserDto userDto = new UserDto(user.getId(), user.getUsername());
         return ResponseEntity.ok(userDto);
     }
