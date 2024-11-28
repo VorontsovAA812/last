@@ -25,19 +25,17 @@ public class DocumentController {
 
     @PostMapping("/create")
     public ResponseEntity<Map<String, Long>> createDocument(@RequestBody NewDocumentRequest request, Authentication authentication) {
-        // Извлекаем текущего пользователя из контекста аутентификации
-        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
-        Long userId = userDetails.getId();
+
 
         // Передаем ID пользователя и данные документа в сервис
-        Long documentId = documentService.addNewDocument(request, userId);
+        Long documentId = documentService.createDocument(request,authentication);
 
         // Возвращаем JSON с ключом "documentId"
         return ResponseEntity.ok(Map.of("documentId", documentId));
     }
 
     @PostMapping("/{documentId}/user/{userId}")
-    public ResponseEntity<Void> addUserToDocument(@PathVariable Long documentId, @PathVariable Long userId) {
+    public ResponseEntity<Void> addNewUserToDocument(@PathVariable Long documentId, @PathVariable Long userId) {
         documentService.addNewUserToDocument(userId, documentId);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }

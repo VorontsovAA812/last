@@ -6,9 +6,11 @@ import com.example.demo.repos.DocumentRepo;
 import com.example.demo.rest.dto.DocumentDtos.NewDocumentRequest;
 import com.example.demo.rest.dto.UserDtos.NewUserRequest;
 import com.example.demo.rest.dto.UserDtos.UserDto;
+import com.example.demo.security.CustomUserDetails;
 import com.example.demo.service.DocumentService;
 import com.example.demo.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -45,8 +47,9 @@ public class DocumentServiceImpl implements DocumentService {
     }
 
     @Override
-    public Long addNewDocument(NewDocumentRequest request,Long userId) {
-
+    public Long createDocument(NewDocumentRequest request, Authentication authentication) {
+        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+        Long userId = userDetails.getId();
         User author = userService.findById(userId);
 
         Document document = new Document();
