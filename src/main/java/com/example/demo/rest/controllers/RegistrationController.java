@@ -1,8 +1,10 @@
 package com.example.demo.rest.controllers;
 
 import com.example.demo.domain.User;
+import com.example.demo.rest.dto.RegistrationDtos.RegistrationResult;
 import com.example.demo.rest.dto.UserDtos.NewUserRequest;
 import com.example.demo.rest.dto.UserDtos.UserDto;
+import com.example.demo.service.RegistrationService;
 import com.example.demo.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,6 +20,8 @@ import javax.sql.RowSet;
 public class RegistrationController  {
 
     @Autowired
+    private RegistrationService registrationService;
+    @Autowired
     private UserService userService;
     @GetMapping
     public String showRegisterPage(Model model) {
@@ -29,22 +33,17 @@ public class RegistrationController  {
     public String registerUser(@RequestParam String username,
                                @RequestParam String password,
                                Model model) {
-        // Проверяем, существует ли пользователь
-        User existingUser = userService.findByUsername(username);
-        if (existingUser != null) {
-            model.addAttribute("error", "Пользователь с таким именем уже существует!");
-            return "register"; // Возвращаем страницу регистрации с сообщением об ошибке
+        RegistrationResult result = registrationService.registerUser(username, password);
+
+        if (!result.isSuccess()) {
+            model.addAttribute("error", result.getMessage());
+            return "register";
         }
 
-        // Создаём нового пользователя
-        NewUserRequest request = new NewUserRequest();
-        request.setUsername(username);
-        request.setPassword(password);
-        userService.addNewUser(request);
-
-        model.addAttribute("success", "Пользователь успешно зарегистрирован!");
-        return "login"; // Перенаправляем на страницу входа
+        model.addAttribute("success", result.getMessage());
+        return "login";
     }
+
 
 
 }

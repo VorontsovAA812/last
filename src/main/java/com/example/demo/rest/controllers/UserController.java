@@ -32,7 +32,6 @@ public class UserController {
     @ResponseBody
     @PostMapping
     public ResponseEntity<Long> add(@RequestBody NewUserRequest request) //
-    // Long - возвращаем индекс добавленного пользователя
     {
         System.out.println("Получен запрос на создание пользователя: " + request);
 
@@ -43,13 +42,12 @@ public class UserController {
     @GetMapping("/username/{username}")
     public ResponseEntity<UserDto> findByUsername(@PathVariable String username)
     {
-        User user = userService.findByUsername(username);
-        if (user == null) {
+        UserDto userDto = userService.findByUsername(username);
+        if (userDto == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
 
-        // Преобразуем User в UserDto
-        UserDto userDto = new UserDto(user.getUsername(),user.getRole());
+
         return ResponseEntity.ok(userDto);
 
     }

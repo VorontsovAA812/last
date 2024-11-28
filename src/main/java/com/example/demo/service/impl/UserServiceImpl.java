@@ -3,6 +3,7 @@ package com.example.demo.service.impl;
 import com.example.demo.domain.User;
 import com.example.demo.repos.UserRepo;
 import com.example.demo.rest.dto.UserDtos.NewUserRequest;
+import com.example.demo.rest.dto.UserDtos.UserDto;
 import com.example.demo.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -29,7 +30,7 @@ public class UserServiceImpl implements UserService {
 
 
         @Override
-        public User findByUsername(String username) {
+        public UserDto findByUsername(String username) {
             User user;
             Optional<User> optionalUser = userRepo.findByUsername(username);
             if (optionalUser.isPresent()) {
@@ -37,7 +38,7 @@ public class UserServiceImpl implements UserService {
             } else {
                 return null;
             }
-            return  user;
+            return new UserDto(user.getUsername(),user.getRole());
     }
 
 
