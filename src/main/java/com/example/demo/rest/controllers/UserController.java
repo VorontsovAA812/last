@@ -12,6 +12,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Optional;
+
 @Controller
 @RequestMapping("/api/v1/usr")
 public class UserController {
@@ -37,7 +39,23 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.CREATED).body(userService.addNewUser(request));
     }
 
-    @DeleteMapping("/{id}")
+    @ResponseBody
+    @GetMapping("/username/{username}")
+    public ResponseEntity<UserDto> findByUsername(@PathVariable String username)
+    {
+        User user = userService.findByUsername(username);
+        if (user == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+
+        // Преобразуем User в UserDto
+        UserDto userDto = new UserDto(user.getUsername(),user.getRole());
+        return ResponseEntity.ok(userDto);
+
+    }
+
+
+    @DeleteMapping("/id/{id}")
     public ResponseEntity<?> deleteById(@PathVariable Long id)
     {
         userService.deleteById(id);

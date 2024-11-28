@@ -34,7 +34,6 @@ public class UserServiceImpl implements UserService {
             Optional<User> optionalUser = userRepo.findByUsername(username);
             if (optionalUser.isPresent()) {
                 user = optionalUser.get();
-                // Дальнейшая логика
             } else {
                 return null;
             }

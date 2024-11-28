@@ -4,10 +4,20 @@
     <title>Создать документ</title>
 </head>
 <body>
+
 <div id="app">
     <main>
+        <section class="search-section">
+            <label for="username">Найти пользователя:</label>
+            <input type="text" id="username"  ref="usernameInput" placeholder="Введите имя пользователя">
+            <button @click="findUserByUsername">Найти</button>
+            <p v-if="foundUser">Найден пользователь: {{ foundUser.username }}</p>
+            <p v-else-if="searchPerformed">Пользователь не найден</p>
+        </section>
+
         <h2>Создать новый документ</h2>
         <button @click="logout">Выйти</button> <!-- Кнопка выхода -->
+
         <form @submit.prevent="createDocument">
             <label for="title">Название документа:</label>
             <input type="text" id="title" ref="titleInput" placeholder="Введите название">
@@ -17,16 +27,34 @@
             <textarea id="content" ref="contentInput" placeholder="Введите содержимое"></textarea>
             <br><br>
 
+
             <button type="submit">Создать документ</button>
         </form>
     </main>
 </div>
+<style>
+    .search-section {
+        position: absolute; /* Позволяет позиционировать элемент относительно ближайшего родителя с position: relative */
+        top: 10px; /* Отступ сверху */
+        right: 10px; /* Отступ справа */
+        text-align: right; /* Выравнивание текста внутри секции по правому краю */
+        background-color: #f8f9fa; /* Светлый фон для видимости */
+        padding: 10px; /* Внутренние отступы */
+        border: 1px solid #ccc; /* Рамка для разделения */
+        border-radius: 5px; /* Сглаженные углы */
+    }
+</style>
+
 
 <script src="https://cdn.jsdelivr.net/npm/vue@3/dist/vue.global.js"></script>
 <script>
     const app = Vue.createApp({
         data() {
-            return {}; // Убираем ненужное поле authorId
+            return {
+                foundUser: null,
+                searchPerformed: false
+                // Найденный пользователь
+            }; // Убираем ненужное поле authorId
         },
         methods: {
             // async fetchCurrentUser() {
@@ -44,6 +72,27 @@
             //         window.location.href = '/login'; // Перенаправляем на логин
             //     }
             // },
+            async findUserByUsername(){
+                const username = this.$refs.usernameInput.value.trim();
+                try {
+                    const response = await fetch(`/api/v1/usr/username/${(username)}`);
+                    if (response.ok) {
+                        this.foundUser = await response.json();
+
+                    } else {
+                        this.foundUser = null;
+                        this.searchPerformed= false;
+
+
+                    }
+
+
+                } catch (error) {
+                    console.error('Ошибка при поиске пользователя:', error);
+                    alert('Произошла ошибка при поиске пользователя');
+                }
+
+            },
             async createDocument() {
                 const title = this.$refs.titleInput.value.trim();
                 const content = this.$refs.contentInput.value.trim();

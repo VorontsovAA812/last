@@ -20,8 +20,7 @@ public class UserDto {
     public UserDto() {
     }
 
-    public UserDto(Long id, String username) {
-    }
+
 
     // Геттеры и сеттеры
     public String getUsername() {
